@@ -1,0 +1,242 @@
+Arrow function 
+
+```jsx
+let a=()=>{
+    console.log("Hello World")// NANR
+}
+let b=(a,b)=>{
+    c=a+b    // WANR
+}
+let e=()=>{
+    return 5+10 // NAWR
+}
+let d=(a,b)=>{
+    return a+b    //WAWR
+}
+a()
+b(5,4)
+res_c=e()
+console.log(res_c)
+res=d(5,4)
+console.log(res)
+
+```
+
+Without curly
+
+```jsx
+let a=(x,y)=>x+y
+res=a(5,4)
+console.log(res)
+```
+
+With the return and the curly
+
+```jsx
+let a=(x,y)=>{return x+y}
+res=a(5,4)
+console.log(res)
+```
+
+Difference between the asynchronous and synchronous
+
+Nested function 
+
+It is asynchronous : It don’t wait until the operation is performing
+
+```jsx
+function f(callcheck){
+    setTimeout(()=>{
+        callcheck()
+    },2000)
+    console.log("F is called")
+}
+function check(){
+    console.log("check")
+}
+f(check) 
+// output : F is called 
+			 //   check
+```
+
+It is synchronous : It wait or executed sequentially
+
+```jsx
+function f(callcheck){
+    
+    callcheck()
+    
+    console.log("F is called")
+}
+function check(){
+    console.log("check")
+}
+f(check)
+```
+
+Promise State 
+
+- pending  - not yet received
+- resolve - operation performed (data fetched successfully)
+- reject - operation rejected or no data found
+
+```jsx
+let res=new Promise((resolve,reject)=>{
+    name=undefined
+    setTimeout(()=>{
+        if(name=="anwar"){
+            resolve(name)
+        }
+        else{
+            reject("No data found")
+        }
+    },2000)
+})
+res
+.then((name)=>{
+    console.log(`Received : ${name}`)
+})
+.catch((text)=>{
+    console.log(`problem is : ${text}`)
+})
+.finally(()=>{
+    console.log("finally called")
+})
+
+```
+
+Here the resolve and the reject are the two methods as argument first will call the .then and second argu will call the .catch method 
+
+- .then is the method available in the resolve method  (resolve)
+- .catch is the method available in the reject method (reject)
+
+npx - node package expression
+
+if error persist   npm cache clean —force
+
+c\users\anwar\appdata\roaming\npm
+
+components :
+
+- Functional component It uses the function
+
+```jsx
+import logo from './logo.svg';
+import './App.css';
+
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <img src={logo} className="App-logo" alt="logo" />
+        <p>
+          Edit <code>src/App.js</code> and save to reload.
+        </p>
+        <a
+          className="App-link"
+          href="https://reactjs.org"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Learn React
+        </a>
+      </header>
+    </div>
+  );
+}
+
+export default App;
+
+```
+
+- class component - It uses the class
+
+```jsx
+import React from react;
+
+class MyClass extends React.Component{
+
+    render(){
+        return(
+            <div>
+                <h1>im from the class</h1>
+                <h1>hi welcome</h1>
+            </div>
+        )
+    }
+ }
+```
+
+# Props
+
+## Sending Information from parent to child
+
+### parent (Datas)
+
+Sending the variable ,object to the child component
+
+```jsx
+import Display from "./Display";
+function Datas(){
+    const person={
+        name:'raja',
+        age:15
+    }
+    var name="anwar";
+    var ans=`my name is ${name}`;
+    return(`
+        <div>
+        <h1>Hi i am Datas</h1>
+        <h1>My name is {name}</h1>
+        <h1>{ans}</h1>
+        <Display n={name} obj={person}/>
+        </div>
+    )
+}
+export default Datas;
+```
+
+### child (Display)
+
+Accessing the parent container components 
+
+```jsx
+function Display(values){
+    const {n}=values;
+    return(
+        <div>
+            <h1>Hi i am Display from Datas</h1>
+            <h2>{n}</h2>
+        </div>
+    );
+}
+export default Display;
+```
+
+### or
+
+```jsx
+function Display(props){
+    
+    return(
+        <div>
+            <h1>Hi i am Display from Datas</h1>
+            <h2>{props.n}</h2>
+            <p>{props.obj.name}</p>
+        </div>
+    );
+}
+export default Display;
+```
+
+Another way to export
+    export default function Display(props){
+        
+        return(
+            <div>
+                <h1>Hi i am Display from Datas</h1>
+                <h2>{props.n}</h2>
+                <p>{props.obj.name}</p>
+            </div>
+        );
+    }

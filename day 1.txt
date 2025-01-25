@@ -1,0 +1,216 @@
+# MERN Stack
+
+```jsx
+const message="Hi how are you"
+console.log(message)
+```
+
+If we don’t declare it will use the hoisting means declare the data type as var
+
+Hoisting in javascript is a built in behaviour that move the declarations of functions ,variables,classes to the top of there scope before the code is executed
+
+```jsx
+message="Hi how are you"
+console.log(message)
+```
+
+printing
+
+```jsx
+const myName ="anwar"
+const rollNo=15
+console.log("my name is ",myName," my roll no is ",rollNo)
+
+```
+
+```cpp
+function disp(){
+    a=10
+}
+disp()
+console.log(a)
+```
+
+Printing using the template literal using the symbol (  ` `  )
+
+```jsx
+const myName ="anwar"
+const rollNo=15
+console.log(`Hi my name is ${myName} my roll no is ${rollNo}`)
+
+```
+
+Difference between the const ,var , let
+
+ We cant reassign the const 
+
+```
+const myName ="anwar"
+myName="raja"
+console.log(myName)
+
+```
+
+But we can redeclare the const in different blocks but we can’t re assign
+
+```cpp
+const myName="ram"
+function disp(){
+  const myName="raja"
+  console.log(myName)
+}
+disp();
+console.log(myName)
+```
+
+The keywords var and let can be reassign 
+
+```jsx
+var myName="anwar"
+myName="raja"
+let myRoll=14
+myRoll=15
+console.log(`my name is ${myName} and my roll no is ${myRoll}`)
+
+```
+
+Reassigning in var 
+
+It is possible to reassign the variables with the var declaration
+
+```jsx
+var myName="ram"
+myName="raja"
+console.log(myName)
+```
+
+Redeclaration using var 
+
+We can’t redeclare in the same block it will show error 
+
+```jsx
+var myName="ram"
+var myName="raja"
+console.log(myName)
+```
+
+We can redeclare in the different block 
+
+```cpp
+var myName="ram"
+function disp(){
+  var myName="raja"
+  console.log(myName)
+}
+disp();
+console.log(myName)
+```
+
+```cpp
+function disp(){
+    var a="anwar"
+    if(true){
+        var a="raja"
+        console.log(a)
+    }
+    console.log(a)
+}
+disp() //  raja \n anwar
+```
+
+Redeclare and Reassign using let keyword
+
+```cpp
+function disp(){
+    let a="anwar"
+    if(true){
+        let a="raja"
+        console.log(a)
+    }
+    console.log(a)
+}
+disp() // raja \n raja 
+```
+
+```cpp
+let myName="ram"
+function disp(){
+  let myName="raja"
+  myName="prem"
+  console.log(myName)
+}
+disp();
+console.log(myName)
+```
+
+             Assigning    Declaration       Scope
+
+**let         reassign      redeclare    function scope** 
+
+**var        reassign         no              block scope** 
+
+**const       no                no               block scope**
+
+Object types
+
+```cpp
+const person={
+    name:"anwar",
+    roll:15
+}
+person.name="raja"
+console.log(person.name);
+const per=[3,45,23,'nan',44]
+console.log(per[3]);
+
+```
+
+Template literal is used for declaring the paragraphs or the multi line string or paragraph
+
+```cpp
+a='anwar'
+b="anwar"
+c=`jkadsfjads
+sdfdjkfh
+assfdhjj`
+```
+
+Big Int  It is introduced in javascript 11 th version 
+
+It tells the compiler its not a regular number
+
+```cpp
+a=876578908790987n
+```
+
+Boolean data type 
+
+How to find the type of the data 
+
+```cpp
+let a=true
+console.log(typeof(a)) or console.log(typeof a) 
+```
+
+Null datatype 
+
+It will be only for the object type of data 
+
+```cpp
+let a=Null
+console.log(typeof a) // object 
+```
+
+Undefined
+
+```cpp
+let a;
+console.log(a) //undefined
+console.log(typeof(a))//undefined
+```
+
+- number(int,infinity,NaN),
+- string ,
+- boolean ,
+- arrays and  object ( referenced type of data) type
+- null type undefined ,big int

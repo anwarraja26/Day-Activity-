@@ -1,0 +1,198 @@
+## Use Effect
+
+It is a hook that is used to check if a state or the useState is rendering or not by using the console
+
+It contain two argument one is callback function and another is dependency array 
+
+In below we give only the callback function which means it will render if we click any component like any button
+
+```jsx
+import {useState,useEffect} from 'react';
+export default function Test(){
+    const[count1,setCount1]=useState(0);
+    const[count2,setCount2]=useState(0);
+
+    useEffect(()=>{
+        console.log("rendering...")
+    })
+    return(
+        <div>
+            <h1>Count : {count1}</h1>
+            <h1>Count : {count2}</h1>
+
+            <button onClick={()=>{
+                setCount1(count1+1)
+            }}>Increment </button>
+            <button onClick={()=>{
+                setCount2(count2+1)
+            }}>Increment </button>
+        </div>
+    );
+}
+```
+
+The below code we did not mention what array so no one will render 
+
+```jsx
+import {useState,useEffect} from 'react';
+export default function Test(){
+    const[count1,setCount1]=useState(0);
+    const[count2,setCount2]=useState(0);
+
+    useEffect(()=>{
+        console.log("rendering...")
+    },[])
+    return(
+        <div>
+            <h1>Count : {count1}</h1>
+            <h1>Count : {count2}</h1>
+
+            <button onClick={()=>{
+                setCount1(count1+1)
+            }}>Increment </button>
+            <button onClick={()=>{
+                setCount2(count2+1)
+            }}>Increment </button>
+        </div>
+    );
+}
+```
+
+The below Code will render only when the button 1 is clicked
+
+```jsx
+import {useState,useEffect} from 'react';
+export default function Test(){
+    const[count1,setCount1]=useState(0);
+    const[count2,setCount2]=useState(0);
+
+    useEffect(()=>{
+        console.log("rendering...")
+    },[count1])
+    return(
+        <div>
+            <h1>Count : {count1}</h1>
+            <h1>Count : {count2}</h1>
+
+            <button onClick={()=>{
+                setCount1(count1+1)
+            }}>Increment </button>
+            <button onClick={()=>{
+                setCount2(count2+1)
+            }}>Increment </button>
+        </div>
+    );
+}
+```
+
+## UseReducer Hook
+
+It is the hook that is used to reduce the complexity of the useState 
+
+It is used when the next state is depend on the prev state
+
+dispatch=It is the dispatcher for the function transactionReducer
+
+const[balance,dispatch]=useReducer(transactionReducer,1000);
+
+Here 1000 is the initializer for the balance 
+
+```jsx
+import {useState,useEffect,useReducer} from 'react';
+export default function Test(){
+    const transactionReducer=(balance,action)=>{
+        switch(action.type){
+            case "withdraw":
+                return balance=balance-action.w_amt;
+                
+            case "deposit":
+                return balance=balance+action.d_amt;
+                
+            default:
+                
+        }
+    }
+    const[balance,dispatch]=useReducer(transactionReducer,1000);
+    function withdraw(amount){
+            dispatch({type:"withdraw",w_amt:amount});
+    }
+    const deposit=(amount)=>{
+        dispatch({type:"deposit",d_amt:amount});
+    }
+    
+    return(
+        <div>
+        <h1>Balance is {balance}</h1>
+        <button onClick={()=>{withdraw(500)}}>Withdraw</button>
+        <button onClick={()=>{deposit(1000)}}>Deposit</button>
+        </div>
+    );
+}
+```
+
+## Prop Triggering
+
+It is the processing of sending data from parent to the end child from multiple child
+
+```jsx
+import Child1 from "./Child1.js"
+
+export default  function Parent(){
+    let name="anwar";
+    return(
+        <div>
+
+            <Child1 name={name}></Child1>
+        </div>
+    )
+}
+
+import Child2 from "./Child2.js"
+
+export default function Child1(props){
+    return(
+        <div>
+            <Child2 name={props.name}></Child2>
+        </div>
+    )
+}
+import Child3 from "./Child3.js"
+
+export default function Child2(props){
+    return(
+        
+        <div>
+            <Child3 name={props.name}></Child3>
+        </div>
+    )
+}
+import Child4 from "./Child4.js"
+
+export default function Child3(props){
+    return(
+        
+        <div>
+            <Child4 name={props.name}></Child4>
+        </div>
+    )
+}
+import Child5 from "./Child5.js"
+
+export default function Child4(props){
+    return(
+        
+        <div>
+            <Child5 name={props.name}></Child5>
+        </div>
+    )
+}
+export default function Child5(props){
+    return(
+    <div>
+        <h1>My name is {props.name}</h1>
+    </div>
+    );
+}
+```
+
+To solve this from we the concept of hook called Context

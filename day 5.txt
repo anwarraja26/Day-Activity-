@@ -1,0 +1,147 @@
+### Without Use State hook
+
+```jsx
+export default function States(){
+    var clr='blue'
+    console.log("b4  : ",clr)
+      
+    return(
+        <>
+        <h1>i love {clr} color</h1>
+        <button onClick={()=>{
+             clr='red'
+             console.log('after.......',clr)
+        }}>click here!! </button>
+        </>
+    )
+}
+```
+
+With Use State Hook
+
+```jsx
+import {useState} from 'react';
+export default function States(){
+    const[clr,setclr]=useState('blue')
+      
+    return(
+        <div>
+        <h1>i love {clr} color</h1>
+        <button onClick={()=>{setclr('red')}}>click here!! </button>
+        </div>
+    )
+}
+```
+
+### How to handle more than one hook
+
+```jsx
+import {useState} from 'react';
+export default function States(){
+    const[clr,setClr]=useState('blue')
+    const[name,setName]=useState("anwar")
+    return(
+        <div>
+        <h1>i love {clr} color</h1>
+        <h1>My name is {name}</h1>
+        <button onClick={()=>{setClr('red') ; setName("raja")}}>click here!! </button>
+        </div>
+    )
+}
+```
+
+### How To handle more than one state at a same time
+
+```jsx
+import {useState} from 'react';
+export default function States(){
+    const[data,setData]=useState({
+        clr:"pink",
+        name:"anwar"
+})
+    return(
+        <div>
+        <h1>i love {data.clr} color</h1>
+        <h1>My name is {data.name}</h1>
+        <button onClick={()=>{setData({
+            clr:'green',
+            name:'raja'
+        }
+        )}}>click here!! </button>
+        </div>
+    )
+}
+```
+
+### How to handle the case we need to change one particular data but the other data will went off to solve this to keep the rest of data
+Using the Spread or rest opeartor :
+
+```jsx
+import {useState} from 'react';
+export default function States(){
+    const[data,setData]=useState({
+        clr:"pink",
+        name:"anwar"
+})
+    
+    return(
+        <div>
+        <h1>i love {data.clr} color</h1>
+        <h1>My name is {data.name}</h1>
+        <button onClick={()=>{setData({
+            clr:'green',
+            name:'raja'
+        })}}>Update data</button>
+        <button onClick={()=>{setData({...data,clr:"gray"})}}>Change color</button>
+        </div>
+    )
+}
+```
+
+Use State Hook 
+
+```jsx
+import {useState} from 'react';
+function States(){
+    const[data,changeData]=useState({
+        name:"rahul",
+        roll:14,
+        gender:"female"
+    })
+    return (
+        <div>
+            <h1>Name :{data.name}</h1><br/>
+            <h1>Roll No : {data.roll}</h1><br/>
+            <h1>Gender: {data.gender}</h1><br/>
+            <button onClick={()=>{changeData({
+                name:"anwar",
+                roll:15,
+                gender:"male"
+            })}}>Update Everything</button><br/>
+            <button onClick={()=>{changeData({
+                ...data,name:"gokul"
+            })}}>Change Name</button><br/>
+            <button onClick={()=>{changeData({
+                ...data,roll:20
+            })}}>Change Roll</button><br/>
+            <button onClick={()=>{changeData({
+                ...data,gender:"male"
+            })}}>Change gender</button><br/>
+
+        </div>
+    
+    );
+}
+export default States;
+
+```
+
+Map in js
+
+```jsx
+
+a=[1,2,3,4]
+a.map((d)=>{console.log(d)})
+```
+
+### Map with useState and Array

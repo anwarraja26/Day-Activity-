@@ -1,0 +1,131 @@
+## Function
+
+### Without Argument Without Return type
+
+```jsx
+function disp(){
+    console.log("hai")
+}
+disp()
+```
+
+### With argument and with return type
+
+```jsx
+function add(a){
+    sum=0
+    for(let val of a){
+        if(val>=0 && val<10){
+            sum+=val
+        }
+    }
+    return sum
+}
+let a=[1,'sai',3,4.5,2,5]
+res=add(a)
+console.log(res)
+```
+
+### With argument without return type
+
+```jsx
+function add(a){
+    sum=0
+    for(let val of a){
+        if(val>=0 && val<10){
+            sum+=val
+        }
+    }
+    console.log(`sum is ${sum}`)
+}
+let a=[1,'sai',3,4.5,2,5]
+add(a)
+
+```
+
+### Without argument with return type
+
+```jsx
+function add(){
+    let a=[1,'sai',3,4.5,2,5]
+    sum=0
+    for(let val of a){
+        if(val>=0 && val<10){
+            sum+=val
+        }
+    }
+    return sum
+}
+res=add()
+console.log(`sum is ${sum}`)
+
+```
+
+In javascript we can return the function to the function call 
+
+# Closures
+
+It helps to access the inner function
+
+```jsx
+function outer(){
+    function inner(){
+        console.log("Inner function called")
+    }
+    console.log("Outer function called")
+    return inner
+}
+inner_function=outer()
+inner_function()
+```
+
+Closure Using the anonymous function 
+
+```jsx
+function outer(){
+    console.log("Outer function called")
+    return function(){
+        console.log("Inner function called")
+    }
+}
+inner_function=outer()
+inner_function()
+```
+
+difference between function declaration and function expression 
+
+Function Declaration 
+
+It is the normal function we can also before it will access the function using the method of HOSTING 
+
+```jsx
+inner_function=outer()
+inner_function()
+function outer(){
+    console.log("Outer function called")
+    return function(){
+        console.log("Inner function called")
+    }
+}
+
+```
+
+Function Expression
+
+It is the method of assigning the function to a variable  
+
+It does not perform hosting means we cannot call before declaration 
+
+```jsx
+let myfunc=function outer(){
+    console.log("Outer function called")
+    return function(){
+        console.log("Inner function called")
+    }
+}
+inner_function=myfunc()
+inner_function()
+
+```
+
+The below will return error

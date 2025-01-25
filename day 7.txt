@@ -1,0 +1,226 @@
+# Context Hook
+
+Here we use the concept of context means we declare a variable or the state globally then we can access it from any child by importing it.
+
+It contain the Provider method  from where we can sent the var using the 
+
+```jsx
+import Child1 from "./Child1.js"
+import {createContext,useState} from 'react';
+export const context=createContext();
+export default  function Parent(){
+    
+    // const[name]=useState('anwar');
+    var name="anwar"
+    return(
+        <div>
+            <context.Provider value={name}>
+            <Child1></Child1>
+            </context.Provider>
+        </div>
+    )
+}
+
+import Child2 from "./Child2.js"
+
+export default function Child1(){
+    return(
+        <div>
+            <Child2></Child2>
+        </div>
+    )
+}
+import Child3 from "./Child3.js"
+
+export default function Child2(){
+    return(
+        
+        <div>
+            <Child3></Child3>
+        </div>
+    )
+}
+import Child4 from "./Child4.js"
+
+export default function Child3(){
+    return(
+        
+        <div>
+            <Child4></Child4>
+        </div>
+    )
+}
+import {useContext} from 'react';
+import {context} from './Parent.js'
+export default function Child5(){
+    const name=useContext(context)
+    return(
+    <div>
+        <h1>My name is {name}</h1>
+    </div>
+    );
+}
+
+```
+
+## Context using the Use State
+
+```jsx
+import { createContext, useContext, useState } from "react"
+
+const userContext=createContext()
+export default function Parent2(){
+      const[user,setUser]=useState('Sairam')
+return(
+    <>
+    <userContext.Provider value={{user,setUser}}>
+    <h1>welcome useContext Hook</h1>
+    <C1/>
+    </userContext.Provider>
+    </>
+)}
+function C1( ){
+     return(
+         <>
+         <h1>C1</h1>
+         <C2  />
+         </>
+    )}
+function C2( ){
+    return(
+         <>
+         <h1>C2</h1>
+         <C3 />
+         </>
+    )
+}
+ function C3( ){
+    return(
+         <>
+         <h1>C3</h1>
+         <C4 />
+         </>
+    )
+
+}function C4( ){
+    return(
+         <>
+         <h1>C4</h1>
+         <C5  />
+         </>
+    )
+
+}
+ 
+ 
+
+function C5() {
+  const { user, setUser } = useContext(userContext);
+
+//   const updateUser= () => {
+//     setUser("ram");
+//   };
+
+  return (
+    <>
+      <h1>C5: The data is {user}</h1>
+      <button onClick={()=>{
+        setUser("ram")
+      }}>Change User</button>
+    </>
+  );
+}
+```
+
+Array traversal in react 
+
+```jsx
+      			{
+                <ul>
+                    {arr.map((item)=>(<li>{item}</li>))}
+                </ul>
+            }
+```
+
+It show the unique key error in the console to solve this
+
+To traverse the array in the parent and print the result in the child
+
+```jsx
+Parent
+import Child1 from "./Child1.js"
+import {createContext,useState} from 'react';
+export const context=createContext();
+export default  function Parent(){
+    
+    var arr=[1,4,2,5,6];
+    
+    return(
+        <div>
+            {
+                <ul>
+                    {arr.map((item)=>(
+                    <context.Provider value={{item}}>
+                    <Child1></Child1>
+                    </context.Provider>))
+                    }
+                </ul>
+            }
+            
+        </div>
+    )
+}
+```
+
+```jsx
+import {useContext} from 'react';
+import {context} from './Parent.js'
+export default function Child5(){
+    const {item}=useContext(context)
+    return(
+    <div>
+        <ul>
+            <li>{item}</li>
+        </ul>
+    </div>
+    );
+}
+
+```
+
+## How to Receive data from Child?
+
+Parent
+
+```jsx
+import {useState} from 'react';
+import Child5 from "./Child5";
+export default  function Parent(){
+    const[user]=useState("Parent");
+    const[childData,setChildData]=useState(""); 
+    return(
+        <div>
+            <Child5 name={user} sendDataToParent={setChildData}></Child5>
+            <h1>Data from child is {childData}</h1>
+        </div>
+    )
+}
+```
+
+Child
+
+```jsx
+import {useState} from 'react';
+export default function Child5(props){
+    const[child]=useState("Child");
+    return(
+    <div>
+    <h1>Data from {props.name}</h1>
+        <button onClick={()=>{props.sendDataToParent(child)}}>Click me to sent Data to Parent</button>
+    </div>
+    );
+}
+
+```
+
+9/01/2025

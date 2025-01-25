@@ -1,0 +1,354 @@
+# Navigate
+
+We don’t need to create the Link for the Dashboard in the main page only the Route is enough like below
+
+```jsx
+import './App.css';
+import Home from './Redux/Home';
+import Contact from './Redux/Contact';
+import About from './Redux/About.js';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import User from './Redux/User';
+import NewBook from './Redux/NewBook';
+import OldBook from './Redux/OldBook';
+import Login from './Redux/Login';
+import SignUp from './Redux/SignUp';
+import Dashboard from './Redux/Dashboard';
+function App() {
+  return (
+    <div>
+    
+    <h1>welcome to the cls</h1>
+    <BrowserRouter>
+    <ul>
+     <li><Link to="/">HOME</Link> </li>
+     <li><Link to="/about-us">ABOUT</Link> </li>
+     <li><Link to="/contact-us">CONTACT</Link> </li> 
+     <li><Link to="/user/10">USER 10</Link> </li> 
+     <li><Link to="/user/13">USER 13</Link> </li> 
+     <li><Link to="/user/134">USER 134</Link> </li> 
+     <li><Link to="/book/new book">NEW BOOK</Link> </li>
+     <li><Link to="/book/old book">OLD BOOK</Link> </li>
+     <li><Link to="/signup">SIGN UP</Link></li>
+     <li><Link to="/login">LOGIN</Link></li>
+
+    </ul>
+        <Routes>
+          <Route path='/' element={<Home/>}></Route>
+          <Route path='/about-us' element={<About/>}></Route> 
+          <Route path='/contact-us' element={<Contact/>}></Route>
+          <Route path='/user/:id' element={<User/>}></Route>
+          <Route path = "/book">
+            <Route path='new book' element={<NewBook/>}></Route>
+            <Route path='old book' element={<OldBook/>}></Route>
+          </Route>
+          <Route path="/signup" element={<SignUp />}></Route>
+          <Route path="/login" element={<Login />}></Route>
+          <Route path="/dashboard" element={<Dashboard />}></Route>
+        </Routes>
+    </BrowserRouter>
+
+    </div>
+  )
+}
+export default App;
+
+```
+
+```jsx
+import { useNavigate } from 'react-router-dom';
+export default function Login(){
+    const navigate=useNavigate();
+    return(
+        <div>
+            <h1>Login Page</h1>
+            <button onClick={()=>navigate("/dashboard")}>Dashboard</button>
+        </div>
+    );
+}
+```
+
+# REDUX
+
+It is used to access the global variable 
+
+It contain two things
+
+1. redux Store
+
+It contains multiple states datas 
+
+1. redux slices
+
+To control each state redux provides slice file 
+
+It contain two thing 
+
+- action
+- Reducer
+
+—> action:
+
+It will tell what to do  with the task.
+
+—> Reducer : 
+
+It will tell how to do the task.
+
+It is like dispatch and the transaction reducer in the reducer hook.
+
+## Dependencies
+
+It is used to connect the react and the redux  , it is the react core library
+
+```jsx
+npm install react-redux @reduxjs/toolkit
+```
+
+REDUX
+
+```jsx
+import {createSlice} from '@reduxjs/toolkit';
+const storeUser={
+    eusers:[]
+}
+export const Slice=createSlice({
+    name:'mySlice',
+    storeUser,
+    reducers:{
+        setUsers:(state,action)=>{
+            state.eusers=[...state.eusers,action.payload]
+        }
+    }
+})
+export const {setUsers}=Slice.actions;
+export default Slice.reducer;
+```
+
+- In this createSlice is the hook that is available in the redux toolkit
+- Here storeUser is the global variable that contains eusers that store in array of items
+- Then we need to create the slicer using the createSlice
+- It contain three arguments name,functions to store data,reducers to perform action to the state
+- Here setUsers is the function that is available like in useState  also the reducers is the keyword
+
+# TASK
+
+## After clicking the submit button only show the content in the display
+
+## File structure
+
+Under redux HOME,LOGIN ,SIGN UP are available
+
+Under apps folder store.js
+
+Under slices folder the userSlice.js is available
+
+## How it works  ?
+
+index.js
+
+```jsx
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import reportWebVitals from './reportWebVitals';
+import store from "./apps/store";
+import { Provider } from 'react-redux';
+import App from "./App"
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+  // <React.StrictMode>
+ 
+    <Provider store={store}>
+    <App />
+    </Provider>
+    
+  
+  // </React.StrictMode>
+);
+reportWebVitals();
+
+```
+
+App.js
+
+```jsx
+import './App.css';
+import Home from './Redux/Home';
+import Contact from './Redux/Contact';
+import About from './Redux/About.js';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import User from './Redux/User';
+import NewBook from './Redux/NewBook';
+import OldBook from './Redux/OldBook';
+import Login from './Redux/Login';
+import SignUp from './Redux/SignUp';
+import Dashboard from './Redux/Dashboard';
+
+function App() {
+  return (
+    <div>
+    
+    <h1>welcome to the shop</h1>
+    <BrowserRouter>
+    <ul>
+     <li><Link to="/">HOME</Link> </li>
+    <li><Link to="/about-us">ABOUT</Link> </li>
+     <li><Link to="/contact-us">CONTACT</Link> </li> 
+     <li><Link to="/book/new book">NEW BOOK</Link> </li>
+     <li><Link to="/book/old book">OLD BOOK</Link> </li>
+     <li><Link to="/signup">SIGN UP</Link></li>
+     <li><Link to="/login">LOGIN</Link></li>
+     <li><Link to="/user">USER</Link></li>
+
+    </ul>
+        <Routes>
+          <Route path='/' element={<Home/>}></Route>
+          <Route path='/about-us' element={<About/>}></Route> 
+          <Route path='/contact-us' element={<Contact/>}></Route>
+          <Route path='/user' element={<User/>}></Route>
+          <Route path = "/book">
+            <Route path='new book' element={<NewBook/>}></Route>
+            <Route path='old book' element={<OldBook/>}></Route>
+          </Route>
+          <Route path="/signup" element={<SignUp />}></Route>
+          <Route path="/login" element={<Login />}></Route>
+          <Route path="/dashboard" element={<Dashboard />}></Route>
+        </Routes>
+    </BrowserRouter>
+
+    </div>
+  )
+}
+export default App;
+
+```
+
+SignUp.js
+
+In the signup page out mission is add the details enter by the user to the separate file so we created the form and get the user input during the on change the updateData function is called and it will store the result in the state data . We need to sent the details to the user file using the dispatch hook 
+
+in the user Slice file we have the function named setUser we sent the data to the  userSlice file 
+
+```jsx
+import {useState} from 'react';
+
+// The below two are to  sent data to the store 
+import {useDispatch} from "react-redux";
+import {setUsers} from "../slices/userSlice";
+
+export default  function Signup(){
+    const dispatch=useDispatch();
+
+    const[data,setData]=useState({
+        name:"",
+        roll:"",
+        gender:"",
+        city:"",
+        phone:""
+    })
+    function updateData(d){
+      var variable=d.target.name;
+      var value=d.target.value;
+      setData(()=>{return {...data,[variable]:value}})
+    }
+
+    const addUser=(formdata)=>{
+      formdata.preventDefault();
+      dispatch(setUsers(data));
+    }
+    return(
+      <div>
+        <form >
+          <label>Enter your name: </label>
+          <input type="text" name="name" onChange={updateData}></input><br/>
+
+          <label>Enter your Roll No: </label>
+          <input type="text" name="roll" onChange={updateData}></input><br/>
+
+          <label>Enter your Gender: </label>
+          <input type="text" name="gender" onChange={updateData}></input><br/>
+
+          <label>Enter your City: </label>
+          <input type="text" name="city" onChange={updateData}></input><br/>
+
+          <label>Enter your Phone No: </label>
+          <input type="text" name="phone" onChange={updateData}></input><br/>
+
+          <input type="submit" value="Submit" onClick={addUser}></input>
+        
+        </form>
+      </div>
+    )
+}
+```
+
+Store.js
+
+The store contain many slices using the hook configureStore we create the reducer object for user
+
+```jsx
+import { configureStore } from "@reduxjs/toolkit";
+
+import useReducer from '../slices/userSlice';
+const store=configureStore({
+    reducer:{
+        userInfo:useReducer
+    }
+})
+export default store;
+
+```
+
+User Slicer 
+
+Here initial State is the global accessing variable the setUser function contains the two arguments the state points the initial state function 
+
+```jsx
+import {createSlice} from '@reduxjs/toolkit';
+const userInitialState={
+    eusers:[]
+}
+export const userSlice=createSlice({
+    name:'mySlice',
+    initialState:userInitialState,
+    reducers:{
+        setUsers:(state,action)=>{
+            state.eusers=[...state.eusers,action.payload]
+        }
+    }
+})
+export const {setUsers}=userSlice.actions;
+export default userSlice.reducer;
+```
+
+User.js
+
+It is used to display the details entered by the user in the form to the User file using the hook called useSelector 
+
+```jsx
+import {useSelector} from 'react-redux';
+export default function User(){
+    const users=useSelector((state)=>state.userInfo.eusers);
+    return(
+        <div>
+            <h1>User details</h1>
+            {
+                users.map((users,index)=>{
+                    return(
+                        <div key={index}>
+                            <h1>Name: {users.name}</h1>
+                            <h1>Roll No:{users.roll}</h1>
+                            <h1>Gender: {users.gender}</h1>
+                            <h1>City: {users.city}</h1>                            
+                            <h1>Phone: {users.phone}</h1>
+                        </div>
+                    )
+                })
+            }
+        </div>
+    );
+
+}
+```
+
+BOOTSTRAP CDN LINK

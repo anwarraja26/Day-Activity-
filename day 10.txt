@@ -1,0 +1,96 @@
+# MONGO DB
+
+Type mongod to run the mongo db 
+
+Type mongos to run the mongosh shell
+
+```jsx
+show dbs // IT IS USED TO SHOW THE DATA BASES
+use student // IT IS USED TO CREATE AND USE THE DB 
+db.createCollection("collection_name",{}) // creating the collection 
+db.collection_name .insertOne({})  // To insert the one value
+db.collection_name.find()  //It is used to find all the datas
+db.practice.deleteOne({_id: ObjectId('678f63bb5cdd6daed986b01d')})
+
+```
+
+what are the ways to create the collection ?
+
+what is the cursor object ?
+
+what the find function will return?
+
+## Insert
+
+```jsx
+db.practice.insertOne({name:"fahim"})   // insert one
+db.practice.insertMany([{name:"anwar",age:15},{name:"raja",age:20}]) //insert many
+db.practice.insert({name:"rahim",age:15,address:{area:"palladam",state:"tamilnadu"}
+ // nested insert
+```
+
+## Find
+
+It will return the cursor object 
+
+The cursor object contains the
+
+- toArray
+- forEach
+
+```jsx
+ db.practice.findOne({name:"anwar"})//it return only one record with the name
+ db.practice.find({name:"anwar"}) // it will return all the records with the name anwar
+ db.practice.find({},{_id:0}) // It will return the contents without the id field
+ 
+   
+```
+
+The find method alone does not print more than thousand data to solve this we use toArray () method  or the forEach method this method will iterate there is a difference between these two methods search it 
+
+```jsx
+  db.practice.find({name:"anwar"}).toArray() //IT will print in the array format
+  db.practice.find().forEach((d)=>print("The data",d)) // it will iterate and print
+```
+
+## How to find the nested records details
+
+```jsx
+db.practice.find({address.area:"palladam"})
+```
+
+The above will give error because to find the nested records we need to use the ‘’ or “ “
+
+```jsx
+db.practice.find({'address.area':"palladam"})
+```
+
+## Update
+
+```jsx
+db.practice.updateOne({name:"anwar"},{$set:{roll:16}})
+db.practice.updateMany({name:"anwar"},{$set:{roll:16}})
+db.practice.updateOne({name:"rahim"},{$set:{"address.area":"ukkadam"}}) //update in nested query
+db.practice.updateOne({"company.resignation":"TL"},{$set:{"company.salay":200000}})
+//update with the nested query 
+```
+
+## Update Using Exists
+
+Scenario if we have to change the age 
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/1194d79f-5f07-406f-b7c3-8d26db89d64a/fabfd4e9-02e6-4bb3-bb22-aaf43e71ba2d/image.png)
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/1194d79f-5f07-406f-b7c3-8d26db89d64a/0a13159e-0fdc-4ab4-aceb-633cabc89f19/image.png)
+
+In the both the records the name is anwar to solve this we want to change the age in the second pic 
+
+```jsx
+ db.practice.updateOne({name:"anwar",company:{$exists:true}},{$set:{age:20}})
+```
+
+IT will change the age where the company column exist in which record
+
+![image.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/1194d79f-5f07-406f-b7c3-8d26db89d64a/a4f733d4-295f-4574-8202-c74b6458de38/image.png)
+
+## Update using ID
