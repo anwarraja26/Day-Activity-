@@ -1,0 +1,138 @@
+Backup 
+
+app.js
+
+```jsx
+const express=require("express");
+const bodyParser=require("body-parser");
+const exhbs=require("express-handlebars");
+const app=express();
+const dbo=require("./db");
+const object_id=dbo.object_id;
+
+// configure Handle bars
+app.engine('hbs',
+    exhbs.engine({
+        layoutsDir:"viewsFold/",
+        defaultLayout:'maincopy',
+        extname:'hbs',
+    })
+);
+
+// set the engine and the folder to the app 
+app.set("view engine","hbs");
+app.set("views","viewsFold");
+app.use(bodyParser.urlencoded({extended:true}))
+
+//Routes for post
+
+app.post("/empinfo",async(req,res)=>{
+    const database=await dbo.getDatabase();
+    const collection=database.collection("emp");
+    const employee={empid:req.body.eid,empname:req.body.ename};
+    await collection.insertOne(employee);
+    res.redirect("/?status=1");
+})
+
+app.post("/updateinfo/:e_id",async(req,res)=>{
+    const database=await dbo.getDatabase();
+    const collection=database.collection("emp");
+    const employee={empid:req.body.eid,empname:req.body.ename};
+    let ed_idd=req.params.e_id;
+    await collection.updateOne({_id:new object_id(ed_idd)},{$set:employee});
+    res.redirect("/?status=2");
+})
+//Routes
+app.get('/',async(req,res)=>{
+    let edit_id,edit_emp;
+    let database=await dbo.getDatabase();//calling the getDatabase function in the db.js file 
+    const collection=database.collection("emp")//creating the collection 
+    const cursor=collection.find({}); // find return the cursor object 
+    let datas=await cursor.toArray(); // or we can use forEach
+    // console.log("The data is ",datas);
+    let msg="";
+
+    if(req.query.status=='1'){
+        msg="inserted successfully";
+    }
+    if(req.query.status=='2'){
+        msg="Updated successfully";
+    }
+    if(req.query.edit_idd){
+        edit_id=req.query.edit_idd
+        edit_emp=await collection.findOne({_id:new object_id(edit_id)})
+    } 
+    
+
+    res.render('maincopy',{msg,datas,edit_id,edit_emp});
+})
+
+// starting the server
+app.listen(8000,()=>{
+    console.log("Listening on port 8000");
+});
+
+```
+
+db.js
+
+```jsx
+const mongodb=require("mongodb");
+const mongoClient=mongodb.MongoClient;
+let object_id=mongodb.ObjectId;
+let database;
+async function getDatabase(){
+    const client= await mongoClient.connect('mongodb://127.0.0.1:27017');
+    database=client.db('backend');
+    if(database){
+        console.log("DB Connected successfully");
+    }
+    else{
+        console.log("DB Connecion failed");
+    }
+    return database;
+}
+module.exports={getDatabase,object_id}
+
+```
+
+maincopy.hbs
+
+```jsx
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend</title>
+</head>
+<body>
+    <h1>Backend Example</h1>
+    <p>{{msg}}</p>
+    {{#if edit_id}}
+     <h3>Edit form</h3> 
+    <form action="/updateinfo/{{edit_id}}" method="post">
+        <label for="">Emp Id: </label>
+        <input type="text" name="eid" value="{{edit_emp.empid}}"/><br/><br>
+        <label for="">Emp Name: </label>
+        <input type="text" name="ename" value="{{edit_emp.empname}}"/><br/>
+        <input type="submit">
+    </form><br>
+    {{else}}
+    <h3>Create form</h3>
+    <form action="/empinfo" method="post">
+        <label for="">Emp Id: </label>
+        <input type="text" name="eid"><br/><br>
+        <label for="">Emp Name: </label>
+        <input type="text" name="ename"><br/>
+        <input type="submit">
+    </form><br>
+    {{/if}}
+    <ul>
+        {{#each datas}} 
+        <li>{{this.empid}} {{this.empname}} <a href="/?edit_idd={{this._id}}">Edit</a></li>
+        {{/each}}
+    </ul>
+</body>
+</html>
+```

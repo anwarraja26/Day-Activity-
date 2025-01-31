@@ -1,0 +1,258 @@
+```jsx
+const express=require("express");
+const bodyParser=require("body-parser");
+const exhbs=require("express-handlebars");  //IT is the type of template to display in the browser
+const app=express();        
+const dbo=require("./db");
+const employeeModel=require("./models/empModel")
+
+const object_id=dbo.object_id;
+dbo.getDatabase();
+// configure Handle bars
+app.engine('hbs',
+    exhbs.engine({
+        layoutsDir:"viewsFold/",
+        defaultLayout:'maincopy',
+        extname:'hbs',
+        runtimeOptions:{
+            allowProtoPropertiesByDefault:true,
+            allowProtoMethodsByDefault:true
+        }
+
+    })
+);
+
+// set the engine and the folder to the app 
+app.set("view engine","hbs");
+app.set("views","viewsFold");
+app.use(bodyParser.urlencoded({extended:true}))
+
+//Routes for post
+
+app.post("/empinfo",async(req,res)=>{
+    // const database=await dbo.getDatabase();
+    // const collection=database.collection("emp");
+    const employee={empid:req.body.eid,empname:req.body.ename};
+    const newempDoc=new employeeModel(employee);
+    newempDoc.save()
+    // await collection.insertOne(employee);
+    res.redirect("/?status=1");
+})
+
+app.post("/updateinfo/:e_id",async(req,res)=>{
+    // const database=await dbo.getDatabase();
+    // const collection=database.collection("emp");
+    const employee={empid:req.body.eid,empname:req.body.ename};
+    let ed_idd=req.params.e_id;
+    // await collection.updateOne({_id:new object_id(ed_idd)},{$set:employee});
+    await employeeModel.findOneAndUpdate({_id:ed_idd},employee)
+    res.redirect("/?status=2");
+})
+//Routes
+app.get('/',async(req,res)=>{
+    let edit_id,edit_emp,delete_id,datas;
+    // let database=await dbo.getDatabase();//calling the getDatabase function in the db.js file 
+    // const collection=database.collection("emp")//creating the collection 
+    // const cursor=collection.find({}); // find return the cursor object 
+    // let datas=await cursor.toArray(); // or we can use forEach
+    // console.log("The data is ",datas);
+    datas=await employeeModel.find({});
+    // if(req.query.edit_idd){
+    //     edit_id=req.query.edit_idd;
+    //     edit_emp=await employeeModel.findOne({_id:edit_id})
+    // }
+   
+   
+   
+    let msg="";
+
+    if(req.query.status=='1'){
+        msg="inserted successfully";
+    }
+    if(req.query.status=='2'){
+        msg="Updated successfully";
+    }
+
+    if(req.query.status=='3'){
+        msg="Deleted successfully";
+    }
+    if(req.query.edit_idd){
+        edit_id=req.query.edit_idd
+        // edit_emp=await collection.findOne({_id:new object_id(edit_id)}) // It is for mongosh client
+        edit_emp=await employeeModel.findOne({_id:edit_id})
+    } 
+    if(req.query.delete_idd){
+        delete_id=req.query.delete_idd;
+        await collection.deleteOne({_id:new object_id(delete_id)})
+        res.redirect('/?status=3')
+    }
+    
+
+    res.render('maincopy',{msg,datas,edit_id,edit_emp});
+})
+
+// starting the server
+app.listen(8000,()=>{
+    console.log("Listening on port 8000");
+});
+
+```
+
+## db.js
+
+In the db.js we imported the module mongoose
+
+In the mongoClient we connect then create the database but in here we have the inbuilt function called connect
+
+```jsx
+mongse.connect('mongodb://127.0.0.1:27017/backend') //It is the continuous function that contain the .then and the catch methods 
+```
+
+```jsx
+// const mongodb=require("mongodb");
+// const mongoClient=mongodb.MongoClient;
+// let object_id=mongodb.ObjectId;
+
+const mongse=require("mongoose");
+// 
+// 
+// let database;
+// async function getDatabase(){
+    // const client= await mongoClient.connect('mongodb://127.0.0.1:27017');
+    // database=client.db('backend');
+    // if(database){
+        // console.log("DB Connected successfully");
+    // }
+    // else{
+        // console.log("DB Connecion failed");
+    // }
+    // return database;
+// }
+
+let database;
+async function getDatabase(){
+    mongse.connect('mongodb://127.0.0.1:27017/backend')
+    .then(()=>{
+        console.log("DB Connected");
+    })
+    .catch(()=>{
+        console.log("DB error");
+    })
+}
+
+// module.exports={getDatabase,object_id}
+module.exports={getDatabase} //It is the named export means we can access only with the help of obj.getDatabase
+
+```
+
+Models→ empModel.js
+
+## empModel.js
+
+In this we have created the schema and model for the schema and then exported the model
+
+```jsx
+const mongose=require("mongoose");
+const empSchema=new mongose.Schema({
+    empid:Number,
+    empname:String
+})
+const empmdl=mongose.model('empmodelee',empSchema);
+module.exports=empmdl;
+```
+
+## mainCopy.hbs
+
+It is like the html file 
+
+```jsx
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backend</title>
+</head>
+<body>
+    <h1>Backend Example</h1>
+    <p>{{msg}}</p>
+    {{#if edit_id}}
+     <h3>Edit form</h3> 
+    <form action="/updateinfo/{{edit_id}}" method="post">
+        <label for="">Emp Id: </label>
+        <input type="text" name="eid" value="{{edit_emp.empid}}"/><br/><br>
+        <label for="">Emp Name: </label>
+        <input type="text" name="ename" value="{{edit_emp.empname}}"/><br/>
+        <input type="submit">
+    </form><br>
+    {{else}}
+    <h3>Create form</h3>
+    <form action="/empinfo" method="post">
+        <label for="">Emp Id: </label>
+        <input type="text" name="eid"><br/><br>
+        <label for="">Emp Name: </label>
+        <input type="text" name="ename"><br/>
+        <input type="submit">
+    </form><br>
+    {{/if}}
+    <ul>
+        {{#each datas}} 
+        <li>{{this.empid}} {{this.empname}} <a href="/?edit_idd={{this._id}}">Edit</a>  <a href="/?delete_idd={{this._id}}" onclick="return confirm('Sure, Are U want to delete ?')">Delete</a> </li>
+        {{/each}}
+    </ul>
+</body>
+</html>
+```
+
+In this the data is stored in the mongodb compass using the model name here we give the model name as empmodelee
+
+```jsx
+const empmdl=mongose.model('empmodelee',empSchema);
+
+```
+
+In the mongo compass it is stored in the name of empmodelees to remove the s we add the comma and give the same name
+
+```jsx
+const empmdl=mongose.model('empmodelee',empSchema,empmodelee);
+
+```
+
+## REST API
+
+same way create the folder open in vs code 
+
+```jsx
+npm i expr2ess body-parser express-handlebars 
+npm i mongosh
+```
+
+## CREATE THE .ENV FILE
+
+## .env
+
+```jsx
+MONGO_URI=mongodb://localhost:27017/mern_db/mern_db
+# 127.0.0.1:27017
+PORT:5000
+```
+
+Install the dependency for the env 
+
+It is maintain the configuration file 
+
+```jsx
+npm i dotenv
+```
+
+Then create the service .js file in root folder
+
+Then create the folder backend
+
+—> configs →db.js
+
+—>controllers→ employeeController.js
+
+—>model⇒Employee.js
+
+—>routes⇒employee.js

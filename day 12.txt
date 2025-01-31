@@ -1,0 +1,38 @@
+# Backend using mongosh ………
+
+Before we uses the mongo client to connect the data base now we are goin to use the mongosh
+
+Additionally we need to create the models folder with the file of any name here we use the empModel. It is the pojo class like class with the  getter setter constructor in the java.
+
+### Here we commanded the code done using the mongo client.
+
+In this we don’t need to connect the database every time because we created the model it will create the schema once the database is once connected after that we created the model using the schema and then we create or insert edit or delete. 
+
+## App.js
+
+In the app.js file we have imported the model and stored it in the object named employeeModel 
+
+In this we also added the below 
+
+```jsx
+        runtimeOptions:{
+            allowProtoPropertiesByDefault:true,
+            allowProtoMethodsByDefault:true
+        }
+```
+
+It is used to solve the error  below
+
+```jsx
+Handlebars: Access has been denied to resolve the property "_id" because it is not an "own property" of its parent.
+You can add a runtime option to disable the check or this warning:
+See https://handlebarsjs.com/api-reference/runtime-options.html#options-to-control-prototype-access for details
+```
+
+The below line is used to get the data from the url because we render the data 
+
+```jsx
+app.use(bodyParser.urlencoded({extended:true}))
+```
+
+The below rendering data can be viewed only with the help of urlencode

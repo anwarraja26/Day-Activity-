@@ -1,0 +1,151 @@
+# What next?
+
+Our task is to create the edit button once we click the button there show the form called edit form with the previously entered value after click the submit button in the edit form 
+
+Steps :
+
+If we just copy paste the form code in the “main copy.jbs”  the two form also displayed in the display
+
+we want the edit form only after we click the edit button 
+
+So to solve this we use the if and else in the main copy .hns 
+
+if we receive the edit_id we need to display the edit form else we need to display the create form 
+
+How we get the edit_id from where we get it 
+
+To solve this in the edit button we have created the reference that carry the edit_idd to the root “/”.
+
+```jsx
+  <ul>
+        {{#each datas}} 
+        <li>{{this.empid}} {{this.empname}} <a href="/?edit_idd={{this._id}}">Edit</a></li>
+        {{/each}}
+    </ul>
+```
+
+We receive the edit_idd in the app.js get method 
+
+```jsx
+//Routes
+app.get('/',async(req,res)=>{
+    let edit_id,edit_emp;
+    let database=await dbo.getDatabase();//calling the getDatabase function in the db.js file 
+    const collection=database.collection("emp")//creating the collection 
+    const cursor=collection.find({}); // find return the cursor object 
+    let datas=await cursor.toArray(); // or we can use forEach
+    console.log("The data is ",datas);
+    let msg="";
+
+    if(req.query.status=='1'){
+        msg="inserted successfully";
+    }
+    if(req.query.edit_idd){
+        edit_id=req.query.edit_idd
+        edit_emp=collection.findOne({_id:edit_id})
+    } 
+    
+
+    res.render('maincopy',{msg,datas,edit_id,edit_name});
+})
+```
+
+Using the edit_idd we find the name of the user and edit_idd is stored in the edit_id and the name is stored in the edit_name because once the edit button is clicked we need to open the form and also we need to show the prev value in the database for the particular id.
+
+In the maincopy we had the if condition if edit_id means go inside the edit form because now we sent the edit_id 
+
+Error : Content not show in the text box
+
+In the edit form form we give the value for the input field but it is not shown in the display
+
+```jsx
+    {{#if edit_id}}
+     <h3>Edit form</h3> 
+    <form action="/updateinfo/{{edit_id}}" method="post">
+        <label for="">Emp Id: </label>
+        <input type="text" name="eid" value="{{edit_emp.empid}}"><br/><br>
+        <label for="">Emp Name: </label>
+        <input type="text" name="ename" value="{{edit_emp.empname}}"><br/>
+        <input type="submit">
+    </form><br>
+```
+
+ because in the get method of the app.js  we give the _id: 39302 like this but in mongo db it should be _id:ObjectId(39302)
+
+```jsx
+    if(req.query.edit_idd){
+        edit_id=req.query.edit_idd
+        edit_emp=collection.findOne({_id:edit_id})
+    } 
+```
+
+To solve we need to import the objectid from the mongo 
+
+In the below code we import the class ObjectId in the db.js file and export the object.
+
+```jsx
+const mongodb=require("mongodb");
+const mongoClient=mongodb.MongoClient;
+let object_id=mongodb.ObjectId;
+let database;
+async function getDatabase(){
+    const client= await mongoClient.connect('mongodb://127.0.0.1:27017');
+    database=client.db('backend');
+    if(database){
+        console.log("DB Connected successfully");
+    }
+    else{
+        console.log("DB Connecion failed");
+    }
+    return database;
+}
+module.exports={getDatabase,object_id}
+
+```
+
+In the app.js file we need to import the object id from db.js 
+
+```jsx
+const dbo=require("./db");
+const object_id=dbo.object_id;
+```
+
+Now the if condition in the app.js to find is changed as follow in that we need to use the new keyword
+
+```jsx
+    if(req.query.edit_idd){
+        edit_id=req.query.edit_idd
+        edit_emp=await collection.findOne({_id:new object_id(edit_id)})
+    } 
+```
+
+In the edit form we have call the action called updateinfo route in app.js with the data of emp_id  from the app.js also we need to create the route in app.js
+
+app.js
+
+```jsx
+app.post("/updateinfo/:e_id",async(req,res)=>{
+    const database=await dbo.getDatabase();
+    const collection=database.collection("emp");
+    const employee={empid:req.body.eid,empname:req.body.ename};
+    let ed_idd=req.params.e_id;
+    await collection.updateOne({_id:new object_id(ed_idd)},{$set:employee});
+    res.redirect("/?status=2");
+})
+```
+
+maincopy .js
+
+```jsx
+ {{#if edit_id}}
+     <h3>Edit form</h3> 
+    <form action="/updateinfo/{{edit_id}}" method="post">
+        <label for="">Emp Id: </label>
+        <input type="text" name="eid" value="{{edit_emp.empid}}"/><br/><br>
+        <label for="">Emp Name: </label>
+        <input type="text" name="ename" value="{{edit_emp.empname}}"/><br/>
+        <input type="submit">
+    </form><br>
+```
+
+Backup

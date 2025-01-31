@@ -1,0 +1,241 @@
+## REST API
+
+same way create the folder open in vs code 
+
+```jsx
+npm i expr2ess body-parser express-handlebars 
+npm i mongosh
+```
+
+## CREATE THE .ENV FILE
+
+## .env
+
+```jsx
+MONGO_URI=mongodb://localhost:27017/mern_db/mern_db
+# 127.0.0.1:27017
+PORT=5000
+```
+
+Install the dependency for the env 
+
+It is maintain the configuration file 
+
+```jsx
+npm i dotenv
+```
+
+Then create the service .js file in root folder
+
+Then create the folder backend
+
+—> configs →db.js
+
+—>controllers→ employeeController.js
+
+—>model⇒Employee.js
+
+—>routes⇒employee.js
+
+## How to insert the data into mongodb by giving the api call in postman ?
+
+## 1.
+
+![image.png](attachment:639c592d-6788-4deb-a6f0-7d007de51ad7:image.png)
+
+Post → IF we first time insert
+
+Put → If we going to modify the prev inserted one 
+
+get → If we want to get the values
+
+delete → If we want to delete the content
+
+## Fill the model folder Employee.js file  contents.
+
+```jsx
+const mongoose=require("mongoose");
+
+const employeeSchema=new mongoose.Schema({
+    empid:Number,
+    empname:String
+})
+module.exports=mongoose.model('Employee0',employeeSchema);
+```
+
+Then fill the EmployeeControllers.js
+
+```jsx
+const Employee=require("../models/Employee");
+
+exports.createEmployee=async(req,res)=>{
+    try{
+        const{empid,empname}=req.body;
+        const newEmployee=new Employee({empid,empname});
+        const savedEmployee= await newEmployee.save();
+        res.status(200).json(savedEmployee);
+    }
+    catch(err){
+        res.status(500).json({error:err.message});
+    }
+}
+```
+
+Create the routes named employee.js
+
+```jsx
+const express=require("express");
+
+const {createEmployee}=require("../controllers/employeeController");
+
+const router=express.Router();
+router.post("/",createEmployee);
+module.exports=router;
+```
+
+## db.js
+
+```jsx
+const mongoose=require("mongoose");
+
+const connectDB=async()=>{
+    try{
+        const conn= await mongoose.connect(process.env.MONGO_URI);
+        console.log(`DB connected: ${conn.connection.host}`);
+    }
+    catch(err){
+        console.log(`Error:${err.message}`);
+        process.exit(1);
+    }
+};
+module.exports=connectDB;
+```
+
+## server.js file
+
+```jsx
+const express=require("express");
+const bodyParser=require("body-parser");
+const dotenv=require("dotenv");
+const connectDB=require("./backend/configs/db");
+
+const employeeRoutes=require("./backend/routes/employee")
+dotenv.config();
+
+connectDB();
+const app=express();
+app.use(bodyParser.json());
+app.use("/api/employees",employeeRoutes);
+
+const PORT=process.env.PORT || 8000; // IF the port 5000 is busy 8000 will work
+app.listen(PORT,()=>{
+    console.log(`Server Running on port ${PORT}`);
+})
+```
+
+Now run the mongod in cmd and run the server using the nodemon server.js
+
+Then go to post man create the new HTTP request the change to post method 
+
+```jsx
+const express=require("express");
+const bodyParser=require("body-parser");
+const dotenv=require("dotenv");
+const connectDB=require("./backend/configs/db");
+
+const employeeRoutes=require("./backend/routes/employee")
+dotenv.config();
+
+connectDB();
+const app=express();
+app.use(bodyParser.json());
+app.use("/api/employees",employeeRoutes);
+
+const PORT=process.env.PORT || 8000; // IF the port 5000 is busy 8000 will work
+app.listen(PORT,()=>{
+    console.log(`Server Running on port ${PORT}`);
+})
+```
+
+## GET AND EDIT
+
+The get method can be done adding the code below in the employeeController.js file 
+
+```jsx
+exports.getEmployee=async(req,res)=>{
+    try{
+        const employees=await Employee.find();
+        res.status(200).json (employees);
+    }
+    catch(err){
+        res.status(500).json({error:err.message});
+    }
+}
+```
+
+Then we need to create the route for the record in the employee.js router file 
+
+```jsx
+const express=require("express");
+
+const {createEmployee,getEmployee,editEmployee}=require("../controllers/employeeController");
+
+const router=express.Router();
+router.post("/",createEmployee);
+router.get("/",getEmployee);
+router.put("/:id",editEmployee);
+
+module.exports=router;
+```
+
+Then run the server in the postman enter the previous url and change the method to get instead of post  Now all the contents will be displayed.
+
+How to edit in the same way add the content 
+
+```jsx
+exports.editEmployee=async(req,res)=>{
+    try{
+        const e_id=req.params.id;
+        const {empid,empname}=req.body;
+        const updateEmployee=await Employee.findByIdAndUpdate(
+            e_id,
+            {empid,empname}
+        );
+        if(!updateEmployee){
+            return res.status(404).json({message:"Employee not found"});
+        }
+        res.status(200).json(updateEmployee);
+    }
+    catch(err){
+        res.status(500).json({error:err.message});
+    }
+}
+```
+
+```jsx
+router.put("/:id",editEmployee);
+```
+
+Then go to the post man and then find the id by giving the get request and choose id to find the copy the id and paste it along with the prev id Eg as below
+
+```jsx
+http://localhost:8000/api/employees/67987e309c2273c343b04457
+```
+
+Then change the method to put and sent the request now you get the response  or details for the given id.
+
+# HOW TO CONNECT THE FRONTEND WITH THE BACKEND ?
+
+## Cors  Cross origin
+
+It helps to connect the frontend with the backend because the both the things will run in different server it helps to communicate the frontend and the backend.
+
+It is download in the backend folder
+
+```jsx
+npm install cors
+```
+
+## axios
+
+It helps to receive the https url in frontend we need to install it in the fro ntend folder
